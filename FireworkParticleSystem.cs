@@ -6,15 +6,30 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Threading.Tasks;
 
+
 namespace ParticleSystemExercise
 {
-    public class ExplosionParticleSystem : ParticleSystem
+
+
+    public class FireworkParticleSystem : ParticleSystem
+    {    
+        Color[] colors = new Color[]
     {
-        public ExplosionParticleSystem(Game game, int maxExplosions) : base(game, maxExplosions * 25) {}
+       Color.Fuchsia,
+       Color.Red,
+       Color.Crimson,
+       Color.CadetBlue,
+       Color.Aqua,
+       Color.HotPink,
+       Color.LimeGreen
+    };
+
+    Color color;
+        public FireworkParticleSystem(Game game, int maxExplosions) : base(game, maxExplosions * 25) {}
 
     protected override void InitializeConstants()
     {
-        textureFilename = "explosion";
+        textureFilename = "particle";
 
         minNumParticles = 20;
         maxNumParticles = 25;
@@ -36,7 +51,9 @@ namespace ParticleSystemExercise
 
         var angularVelocity = RandomHelper.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4);
 
-        p.Initialize(where, velocity, acceleration, lifetime: lifetime, rotation: rotation, angularVelocity: angularVelocity);
+        var scale = RandomHelper.NextFloat(4, 6);
+
+        p.Initialize(where, velocity, acceleration, color, lifetime: lifetime, rotation: rotation, angularVelocity: angularVelocity, scale: scale  );
     }
 
         protected override void UpdateParticle(ref Particle particle, float dt)
@@ -45,12 +62,14 @@ namespace ParticleSystemExercise
 
             float normalizedLifetime = particle.TimeSinceStart / particle.Lifetime;
 
-            float alpha = 4 * normalizedLifetime * (1 - normalizedLifetime);
-            particle.Color = Color.White * alpha;
 
-            particle.Scale = .75f + .25f * normalizedLifetime;
+
+            particle.Scale = .1f + .25f * normalizedLifetime;
         }
 
-        public void PlaceExplosion(Vector2 where) => AddParticles(where);
+        public void PlaceFirework(Vector2 where){
+            color = colors[RandomHelper.Next(colors.Length)];
+            AddParticles(where);
+        }
     }
 }
